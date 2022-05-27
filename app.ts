@@ -109,11 +109,15 @@ async function contracts(wallet:Wallet, times:number) {
     console.log(' > contract address:', contract.address);
     await contract.deployed();
 
-    if (i <= 10) {
-      // interact with contract
-      const contractWithSigner = contract.connect(wallet);
-      const tx = await contractWithSigner.setValue("Yep!");
-      await tx.wait();
+    // for the first 10 contracts
+    if (i < 10) {
+      // interact with the contract at least 10 times
+      for (let j = 0; j < 10; j++) {
+        const contractWithSigner = contract.connect(wallet);
+        const tx = await contractWithSigner.setValue("Yep!");
+        await tx.wait();
+        console.log(` >>> tx #${j + 1} is done`);
+      }
     }
   }
 }
