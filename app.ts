@@ -1,5 +1,4 @@
 import { providers, Wallet, ethers, Transaction } from "ethers";
-import { TransactionTypes } from "ethers/lib/utils";
 import _ from "lodash";
 
 const walletPkey = process.env.WALLET_PKEY || "";
@@ -19,19 +18,19 @@ async function run() {
   // transactions
   await transactions(wallet, 100);
 
-  // contract deployments
-  await contractDeployments(wallet, 100);
+  // contracts
+  await contracts(wallet, 100);
 
   console.log(">> done");
 }
 
 async function transactions(wallet:Wallet, times:number) {
   console.log(">> transactions");
-  const receiverAddress = [
+  const receiverAddress = _.without([
     "0x5De1F107b07CBAf62F3e3c7571a5ce0D8487eD45",
     "0x39e3668D11E5d6CCe1196d182689ee1729bb4dFf",
     "0xF1caF90E02C1B0e454ba9063672526a452127CD0"
-  ];
+  ], wallet.address);
   const amountInEther = _.random(0.01, 0.05).toString();
 
   for (let i = 0; i < times; i++) {
@@ -43,8 +42,8 @@ async function transactions(wallet:Wallet, times:number) {
   }
 }
 
-async function contractDeployments(wallet:Wallet, times:number) {
-  console.log(">> contract deployments");
+async function contracts(wallet:Wallet, times:number) {
+  console.log(">> contract deployments and interactions");
 
   const contractAbi = [
     "event ValueChanged(address indexed author, string oldValue, string newValue)",
@@ -103,11 +102,19 @@ async function contractDeployments(wallet:Wallet, times:number) {
 
 
   for (let i = 0; i < times; i++) {
+    // deploy contract
     const factory = new ethers.ContractFactory(contractAbi, contractBytecode, wallet);
-    const contract = await factory.deploy("Yep!");
+    const contract = await factory.deploy("UHU!");
 
     console.log(' > contract address:', contract.address);
     await contract.deployed();
+
+    if (i <= 10) {
+      // interact with contract
+      const contractWithSigner = contract.connect(wallet);
+      const tx = await contractWithSigner.setValue("Yep!");
+      await tx.wait();
+    }
   }
 }
 
