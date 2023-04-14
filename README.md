@@ -1,6 +1,6 @@
 # Kiln NFT Hunt
 
-The set of scripts written in TypeScript (but like JavaScript 😅) to interact with Kiln Testnet Network.
+The set of scripts written in TypeScript to interact with Kiln Testnet Network.
 
 ## Run
 ```bash
