@@ -1,4 +1,4 @@
-# Kiln NFT Hunt
+# Kiln Sandbox
 
 The set of scripts written in TypeScript to interact with Kiln Testnet Network.
 
